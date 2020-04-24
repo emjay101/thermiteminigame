@@ -1,6 +1,6 @@
 <!doctype html>
 <html  xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <title>NoPixel Thermite (clone by emjay_420)</title>
   <meta name="robots" content="noindex, nofollow">
   <meta name="googlebot" content="noindex, nofollow">
@@ -18,12 +18,12 @@
 <div id="failcnt">0</div>
 
   <div>
-    <input type="text" id="uletters" name="letters" value="QWEASDJKL">
+    <input type="text" id="uletters" name="letters" value="QWEASD">
     <label for="uletters">Letters</label>
   </div>
 
  <div>
-    <input type="text" id="mininterval" name="mininterval" value="500">
+    <input type="text" id="mininterval" name="mininterval" value="700">
     <label for="mininterval">Interval</label>
   </div>
 
@@ -33,9 +33,14 @@
   </div>
 
    <div>
-    <input type="text" id="speed" name="speed" value="1500">
+    <input type="text" id="speed" name="speed" value="675">
     <label for="speed">Time from top to bottom in ms </label>
   </div>
+   <div>	
+	  <input type="checkbox" id="soundonfailure" name="soundonfailure" value="Beep">
+	  <label for="soundonfailure"> Beep on error/missed key</label><br>
+   </div>	
+	
    <div>
     <button onclick="startGame(); return false;">Start</button>
   </div>
@@ -51,12 +56,12 @@ var max_duration_ms = 45000;
 //first letter starts at (ms)
 var ts_next_letter = start_ts;
 //interval between new letters
-var letter_min_interval_ms = 500;
-var letter_max_interval_ms = 500;
+var letter_min_interval_ms = 700;
+var letter_max_interval_ms = 700;
 
 //speed of the descending letter
-var letter_min_speed = 5;
-var letter_max_speed = letter_min_speed;
+var letter_min_speed = 675;
+var letter_max_speed = 675;
 
 //Use these letters
 var letter_list = [];
@@ -72,6 +77,12 @@ var result_box_h = canvas.height * 0.1;
 var success_cnt = 0;
 var error_cnt = 0;
 var end_ts = 0;
+var beep_on_error = false;
+
+var beep_checkbox = document.querySelector('input[value="Beep"]');
+beep_checkbox.addEventListener('change', () => {
+		beep_on_error = beep_checkbox.checked;		
+});
 
 ctx.font = "40px Arial";
 ctx.textAlign = "center";
@@ -163,9 +174,9 @@ function draw(timestamp) {
         }
         else
         {
-            ball.ignore = true;
-            errorWav.play().then(function() {  }).catch(function(error) {});
-            document.getElementById('failcnt').innerHTML = (++error_cnt).toString();
+			ball.ignore = true;
+			document.getElementById('failcnt').innerHTML = (++error_cnt).toString();
+			if(beep_on_error) errorWav.play().then(function() {  }).catch(function(error) { console.error(error);});            
         }
     });
     raf = requestAnimationFrame(draw);
@@ -175,19 +186,15 @@ function draw(timestamp) {
 function doKeyDown(e) {
     letter_list.forEach(function(ball){
         if(ball.ignore) return;
-        if( ball.letter == e.key.toUpperCase() && ball.y > result_box_y &&  ball.y  < result_box_y + result_box_h) {
-		ball.ignore = true;
-		successWav.play().then(function() {  }).catch(function(error) {});
-		document.getElementById('successcnt').innerHTML = (++success_cnt).toString();
+        if(!ball.ignore && ball.letter == e.key.toUpperCase() && ball.y > result_box_y &&  ball.y  < result_box_y + result_box_h) {
+            ball.ignore = true;
+            successWav.play().then(function() {  }).catch(function(error) {console.error(error);});
+            document.getElementById('successcnt').innerHTML = (++success_cnt).toString();
         }
-	else{
-		errorWav.play().then(function() {  }).catch(function(error) {});
-		document.getElementById('failcnt').innerHTML = (++error_cnt).toString();	
-	}
     });
 
 }
-window.addEventListener( "keydown", doKeyDown )
+window.addEventListener( "keydown", doKeyDown );
 
   //]]></script>
 
