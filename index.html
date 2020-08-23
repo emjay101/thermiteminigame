@@ -5,7 +5,7 @@
   <meta name="robots" content="noindex, nofollow">
   <meta name="googlebot" content="noindex, nofollow">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="Content-Security-Policy" content="default-src *; script-src 'self' 'unsafe-inline' 'unsafe-eval' *">
+  <meta http-equiv="Content-Security-Policy" content="default-src *; script-src 'self' 'unsafe-eval' *">
 </head>
 <body>
 
@@ -13,8 +13,8 @@
 <div style="display:none;">
   <img id="source"
        src="shnake.png"
-       width="32" 
-	   height="32">
+       width="50" 
+	   height="50">
 </div>
 
 <audio id="error" src="error.wav" preload="auto"></audio>
@@ -179,7 +179,7 @@ function draw(timestamp) {
         ball.y = diff / letter_min_speed * canvas.height;
         if (diff < letter_min_speed && ball.y < canvas.height) {
            ctx.fillText(ball.letter, ball.x, ball.y);
-		   ctx.drawImage(shnakeimg,  ball.x - 32, ball.y - 32, 64, 64);
+		   ctx.drawImage(shnakeimg,  ball.x - 25, ball.y - 25, 50, 50);
         }
         else
         {
